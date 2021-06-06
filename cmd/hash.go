@@ -70,13 +70,14 @@ func processRequest(algorithm, input string) {
 	//fmt.Printf("Input is %s\n", input)
 
 	switch algorithm {
-	case "sha3-256":
+	case "sha3":
 		//fmt.Println("Selected algorithm is sha3-256")
 		getSHA3(input)
-	case "sha-256":
+	case "sha2":
 		getSHA2(input)
 	default:
 		fmt.Println("No algorithm matched. Selecting default algorithm sha2")
+		getSHA2(input)
 	}
 
 }
