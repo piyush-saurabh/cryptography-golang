@@ -16,8 +16,10 @@ limitations under the License.
 package cmd
 
 import (
+	"crypto/sha256"
+	//"crypto/sha384" not available in standard crypto
+	"crypto/sha512"
 	"fmt"
-	//"encoding/hex"
 
 	"github.com/spf13/cobra"
 	"golang.org/x/crypto/sha3"
@@ -57,7 +59,7 @@ func init() {
 	// is called directly, e.g.:
 	// hashCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
-	hashCmd.PersistentFlags().StringP("algo", "a", "sha2", "Algorithm for hashing. Possible values: sha3-256")
+	hashCmd.PersistentFlags().StringP("algo", "a", "sha2", "Algorithm for hashing. Possible values: sha3-256, sha-256")
 
 	hashCmd.PersistentFlags().StringP("input", "i", "", "Enter the text you want to hash")
 }
@@ -71,16 +73,43 @@ func processRequest(algorithm, input string) {
 	case "sha3-256":
 		//fmt.Println("Selected algorithm is sha3-256")
 		getSHA3(input)
+	case "sha-256":
+		getSHA2(input)
 	default:
 		fmt.Println("No algorithm matched. Selecting default algorithm sha2")
 	}
 
 }
 
-// SHA3-256 inpmementation
+// SHA3 implementation
 // Ref: https://pkg.go.dev/golang.org/x/crypto/sha3#Sum256
 func getSHA3(input string) {
-	hash := sha3.Sum256([]byte(input))
 
-	fmt.Printf("Output: %x\n", hash)
+	// SHA3-256 bits
+	hash256 := sha3.Sum256([]byte(input))
+	fmt.Printf("SHA3-256 output: %x\n", hash256)
+
+	// SHA3-384 bits
+	hash384 := sha3.Sum384([]byte(input))
+	fmt.Printf("SHA3-384 output: %x\n", hash384)
+
+	// SHA3-512 bits
+	hash512 := sha3.Sum512([]byte(input))
+	fmt.Printf("SHA3-512 output: %x\n", hash512)
+}
+
+// SHA2 256 implementation
+// Ref: https://golang.org/pkg/crypto/sha256/#Sum256
+func getSHA2(input string) {
+	hash256 := sha256.Sum256([]byte(input))
+	fmt.Printf("SHA2-256 output: %x\n", hash256)
+
+	/*
+	   Not available in standard crypto library
+	   	hash384 := sha384.Sum384([]byte(input))
+	   	fmt.Printf("SHA2-384 output: %x\n", hash384)
+	*/
+
+	hash512 := sha512.Sum512([]byte(input))
+	fmt.Printf("SHA2-512 output: %x\n", hash512)
 }
